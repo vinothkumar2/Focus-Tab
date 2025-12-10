@@ -87,6 +87,15 @@ The extension should now appear in your toolbar.
 - While the session is active, attempts to navigate to a blocked site are redirected to `warning.html`, which shows a motivational message.  
 - Click **End Focus Session** to restore the hidden tabs.
 
+## Screenshot
+![Focus Mode Screenshot]
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/4b4dd3ea-629d-4b66-ac3d-e0d379c6f530" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/cea5d2b6-7492-400a-adc4-17ec633da8c8" />
+
+
+
 ## Project Structure
 
 ```
