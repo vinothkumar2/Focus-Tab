@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Focus Tab - Stay Focused</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .quote-container {
+            font-size: 1.4em;
+            font-style: italic;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            border-left: 4px solid #fff;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .lock-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .message {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .site-name {
+            font-weight: bold;
+            color: #ffd700;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        .focus-message {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="lock-icon">🔒</span>
+        <h1>Focus Mode Active</h1>
+        
+        <div class="message">
+            <p><span id="siteName"></span> is blocked to help you stay focused.</p>
+        </div>
+        
+        <div class="quote-container">
+            <div id="quote">Stay focused on what matters most.</div>
+        </div>
+        
+        <button class="back-button" id="goBack">
+            ← Return to Your Work
+        </button>
+        
+        <div class="focus-message">
+            You can end focus mode anytime from the extension popup.
+        </div>
+    </div>
+
+    <script src="warning.js"></script>
+</body>
+</html>

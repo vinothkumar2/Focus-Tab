@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Focus Tab</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <h1>⏱️ Focus Tab</h1>
+
+  <!-- Session Status -->
+  <div id="sessionStatus" class="session-info">
+    Focus mode is not active
+  </div>
+
+  <!-- Tooltip -->
+  <div class="tooltip">
+    Add distracting sites to block during focus time.
+  </div>
+
+  <!-- Site List -->
+  <ul id="site-list"></ul>
+
+  <!-- Add Site -->
+  <div class="add-site">
+    <input type="text" id="site-input" placeholder="e.g. youtube.com" />
+    <button id="add-button">Add to Blacklist</button>
+  </div>
+
+  <!-- Current Site Info -->
+  <div id="currentSiteInfo" class="current-site-info" style="display: none;">
+    Current site: <span id="currentSiteName"></span>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button id="hideTabs">
+      <span>▶️</span>
+      Start Focus Session
+    </button>
+    <button id="restoreTabs" style="display: none;">
+      <span>⏹️</span>
+      End Focus Session
+    </button>
+    <button id="addCurrentSite">
+      <span>➕</span>
+      Add Current Site to Blacklist
+    </button>
+  </div>
+
+  <!-- Warning System -->
+  <div class="warning-system">
+    <h3>Custom Warning Message</h3>
+    <textarea id="custom-message" placeholder="Enter motivational message to show when blocked..."></textarea>
+    <button id="save-message">Save Message</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
