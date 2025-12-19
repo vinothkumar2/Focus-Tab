@@ -2,16 +2,20 @@
   "manifest_version": 3,
   "name": "Focus Tab",
   "version": "1.0",
-  "description": "Hide distracting tabs and restore them later.",
+  "description": "Hide distracting tabs and Pomodoro timer",
   "permissions": [
     "tabs",
     "storage",
     "webNavigation",
-    "activeTab"
+    "activeTab",
+    "alarms",
+    "notifications"
   ],
   "action": {
     "default_popup": "popup/popup.html",
-    "default_icon": "icons/icon48.png"
+    "default_icon": {
+    "48": "icons/icon48.png"
+    }
   },
   "background": {
     "service_worker": "background.js"

@@ -8,51 +8,150 @@
 <body>
   <h1>⏱️ Focus Tab</h1>
 
-  <!-- Session Status -->
-  <div id="sessionStatus" class="session-info">
-    Focus mode is not active
+  <!-- Tabs Navigation -->
+  <div class="tabs">
+    <button class="tab-button active" data-tab="focus-tab">Focus Tab</button>
+    <button class="tab-button" data-tab="pomodoro-timer">Pomodoro Timer</button>
   </div>
 
-  <!-- Tooltip -->
-  <div class="tooltip">
-    Add distracting sites to block during focus time.
-  </div>
-
-  <!-- Site List -->
-  <ul id="site-list"></ul>
-
-  <!-- Add Site -->
-  <div class="add-site">
-    <input type="text" id="site-input" placeholder="e.g. youtube.com" />
-    <button id="add-button">Add to Blacklist</button>
-  </div>
-
-  <!-- Current Site Info -->
-  <div id="currentSiteInfo" class="current-site-info" style="display: none;">
-    Current site: <span id="currentSiteName"></span>
-  </div>
-
-  <!-- Action Buttons -->
-  <div class="action-buttons">
-    <button id="hideTabs">
-      <span>▶️</span>
-      Start Focus Session
+  <!-- Active Session Display -->
+  <div id="activeSessionDisplay" class="active-session-display" style="display: none;">
+    <div id="timerStatus" class="timer-status">Work Session</div>
+    <div id="timer">00:00</div>
+    <div class="progress-container">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+    <button id="endTimer" class="action-button">
+      <span>⏹️</span> End Session
     </button>
-    <button id="restoreTabs" style="display: none;">
-      <span>⏹️</span>
-      End Focus Session
-    </button>
+  </div>
+
+  <!-- Focus Tab Content -->
+  <div id="focus-tab" class="tab-content active">
+    <!-- Session Status -->
+    <div id="sessionStatus" class="session-info">
+      <span id="statusIcon">⏸️</span>
+      <span id="statusText">Focus mode is not active</span>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="tooltip">
+      Add distracting sites to block during focus time.
+    </div>
+
+    <!-- Current Site Info -->
+    <div id="currentSiteInfo" class="current-site-info" style="display: none;">
+      <strong>Current site:</strong> <span id="currentSiteName"></span>
+    </div>
+    
+    <!-- Quick Actions -->
     <button id="addCurrentSite">
-      <span>➕</span>
-      Add Current Site to Blacklist
+      <span>➕</span> Add Current Site to Blacklist
     </button>
+
+    <!-- Site List -->
+    <ul id="site-list"></ul>
+
+    <!-- Add Site -->
+    <div class="add-site">
+      <input type="text" id="site-input" placeholder="e.g. youtube.com" />
+      <button id="add-button">Add to Blacklist</button>
+    </div>
+
+    <!-- Focus Tab Action Buttons -->
+    <div class="focus-actions">
+      <button id="hideTabs">
+        <span>▶️</span>
+        Start Focus Session
+      </button>
+      <button id="restoreTabs" style="display: none;">
+        <span>⏹️</span>
+        End Focus Session
+      </button>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+      <div class="quick-stat">
+        <div class="quick-stat-value" id="blockedSitesCount">0</div>
+        <div class="quick-stat-label">Sites Blocked</div>
+      </div>
+      <div class="quick-stat">
+        <div class="quick-stat-value" id="workSessionsCount">0</div>
+        <div class="quick-stat-label">Sessions</div>
+      </div>
+    </div>
+
+    <!-- Warning System -->
+    <div class="warning-system">
+      <h3>Custom Warning Message</h3>
+      <textarea id="custom-message" placeholder="Enter motivational message to show when blocked..."></textarea>
+      <button id="save-message">Save Message</button>
+    </div>
   </div>
 
-  <!-- Warning System -->
-  <div class="warning-system">
-    <h3>Custom Warning Message</h3>
-    <textarea id="custom-message" placeholder="Enter motivational message to show when blocked..."></textarea>
-    <button id="save-message">Save Message</button>
+  <!-- Pomodoro Timer Content -->
+  <div id="pomodoro-timer" class="tab-content">
+    <!-- Timer Controls -->
+    <div class="pomodoro-controls">
+      <div class="work-controls">
+        <h3>🎯 Work Session</h3>
+        <div class="time-options">
+          <div class="time-option selected" data-minutes="25">25 min</div>
+          <div class="time-option" data-minutes="30">30 min</div>
+          <div class="time-option" data-minutes="45">45 min</div>
+          <div class="time-option" data-minutes="20">20 min</div>
+          <div class="time-option" data-minutes="15">15 min</div>
+          <div class="time-option" data-minutes="10">10 min</div>
+        </div>
+        <div class="custom-time">
+          <input type="number" id="workTime" min="1" max="120" value="25" placeholder="Custom" />
+          <button id="startWork" class="action-button">Start Work</button>
+        </div>
+      </div>
+
+      <div class="break-controls">
+        <h3>☕ Break</h3>
+        <div class="time-options">
+          <div class="time-option selected" data-minutes="5">5 min</div>
+          <div class="time-option" data-minutes="10">10 min</div>
+          <div class="time-option" data-minutes="15">15 min</div>
+          <div class="time-option" data-minutes="3">3 min</div>
+          <div class="time-option" data-minutes="2">2 min</div>
+          <div class="time-option" data-minutes="1">1 min</div>
+        </div>
+        <div class="custom-time">
+          <input type="number" id="breakTime" min="1" max="60" value="5" placeholder="Custom" />
+          <button id="startBreak" class="action-button">Start Break</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto Continue -->
+    <div class="auto-continue">
+      <input type="checkbox" id="autoContinue" />
+      <label for="autoContinue">Auto-switch between work and break sessions</label>
+    </div>
+
+    <!-- Timer Stats -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value" id="completedWorkSessions">0</div>
+        <div class="stat-label">Work Sessions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="totalFocusTime">0</div>
+        <div class="stat-label">Focus Minutes</div>
+      </div>
+    </div>
+
+    <!-- Pomodoro Tips -->
+    <div class="pomodoro-tips">
+      <h4>💡 Pomodoro Technique Tips</h4>
+      <p>• Work for 25 minutes, then take a 5-minute break</p>
+      <p>• After 4 work sessions, take a longer 15-30 minute break</p>
+      <p>• During breaks, stand up, stretch, and look away from the screen</p>
+    </div>
   </div>
 
   <script src="popup.js"></script>

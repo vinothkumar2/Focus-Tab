@@ -80,6 +80,13 @@
             font-size: 0.9em;
             opacity: 0.8;
         }
+        .timer-info {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +96,10 @@
         
         <div class="message">
             <p><span id="siteName"></span> is blocked to help you stay focused.</p>
+        </div>
+        
+        <div class="timer-info" id="timerInfo" style="display: none;">
+            ⏰ <span id="remainingTime">25:00</span> remaining in work session
         </div>
         
         <div class="quote-container">
@@ -102,6 +113,10 @@
         <div class="focus-message">
             You can end focus mode anytime from the extension popup.
         </div>
+        <!-- Add this after the site name display -->
+<div class="timer-info" id="timerInfo" style="display: none;">
+  ⏰ <span id="remainingTime">00:00</span> remaining in work session
+</div>
     </div>
 
     <script src="warning.js"></script>
