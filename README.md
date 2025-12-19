@@ -1,10 +1,13 @@
+# 🎯 Focus Tab – Stay Focused
+
+A powerful Chrome extension that helps you stay productive by **blocking distracting websites during focus sessions** and combining it with a **Pomodoro timer** for structured deep work.
+
+---
+
 <p align="center">
 
   <!-- Version -->
   <img src="https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge" />
-
-  <!-- License -->
-  <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" />
 
   <!-- Chrome Extension -->
   <img src="https://img.shields.io/badge/Chrome%20Extension-MV3-orange?style=for-the-badge&logo=google-chrome" />
@@ -17,6 +20,9 @@
   <img src="https://img.shields.io/badge/HTML5-orange?style=for-the-badge&logo=html5" />
   <img src="https://img.shields.io/badge/CSS3-blue?style=for-the-badge&logo=css3&logoColor=white" />
   <img src="https://img.shields.io/badge/Chrome%20API-Extensions-red?style=for-the-badge&logo=google-chrome&logoColor=white" />
+
+  <!-- AI Assistance -->
+  <img src="https://img.shields.io/badge/Built%20with-DeepSeek%20AI-purple?style=for-the-badge" />
 
   <!-- Repo Stats -->
   <a href="https://github.com/vinothkumar2/Focus-Tab/stargazers">
@@ -34,110 +40,184 @@
 
 </p>
 
-# Focus-Tab
+---
 
-A Chrome extension that hides blacklisted sites during a focus session and displays a motivational warning page when a blocked site is accessed.
+## 🔍 Introduction
 
-[Quick Links: [Introduction](#introduction) · [Tech Stack](#tech-stack) · [Prerequisites / Requirements](#prerequisites--requirements) · [Installation](#installation) · [Configuration](#configuration) · [Usage](#usage) · [Project Structure](#project-structure) · [Features](#features) · [Development](#development) · [Contributing](#contributing) · [License](#license) · [FAQ](#faq)]
+**Focus Tab** helps you eliminate distractions by blocking selected websites **only during focus sessions**.  
+It combines **website blocking**, a **Pomodoro timer**, motivational quotes, visual feedback, notifications, and productivity statistics.
 
-## Introduction
+Designed for students, developers, professionals, and anyone who wants to practice deep work.
 
-Focus-Tab helps you stay productive by automatically hiding tabs that match a user‑defined blacklist while a focus session is active. When a blocked site is opened, the extension redirects the tab to a motivational warning page.
+---
 
-## Tech Stack
+## ✨ Features
 
-- **JavaScript** – core logic and Chrome extension APIs  
-- **HTML** – popup UI and warning page  
-- **CSS** – styling for popup and warning page  
-- **Chrome Manifest V3** – extension manifest  
+### 🔒 Focus Tab (Website Blocking)
+- Add or remove websites from a blacklist
+- Block sites **only when focus mode is active**
+- One-click **Start / End Focus Mode**
+- Custom warning messages
+- Motivational quote-based blocking page
+- Clean and distraction-free UI
+
+---
+
+### ⏱️ Pomodoro Timer
+- **Work Mode**
+  - Automatically enables focus mode
+  - Blocks all blacklisted sites
+- **Break Mode**
+  - Automatically disables focus mode
+  - Allows all websites
+- Preset durations:
+  - Work: 15, 20, 25, 30, 45 minutes
+  - Break: 1, 2, 3, 5, 10, 15 minutes
+- **Auto-Continue**
+  - Automatically switches between work & break sessions
+
+---
+
+### 🎨 Visual Feedback
+- Color-coded UI for work & break
+- Live countdown timer
+- Progress bar animation
+- Dark-mode friendly design
+
+---
+
+### 🔔 Notifications
+- Alerts when:
+  - Work session starts
+  - Break session starts
+  - Session ends
+
+---
+
+### 🏷️ Extension Badge
+- Shows **remaining minutes** on the toolbar icon
+- Updates in real time during sessions
+
+---
+
+### 📊 Productivity Statistics
+- Tracks:
+  - Total work sessions
+  - Total focus time (minutes)
+
+---
+
+## 📸 Screenshots
+
+> *(Real usage screenshots)*
+
+<img width="1366" height="768" alt="FOC1" src="https://github.com/user-attachments/assets/96002e28-8798-423b-ba0d-8b0c5c37f4eb" />
+
+<img width="1366" height="768" alt="FOC2" src="https://github.com/user-attachments/assets/2659679d-ce1f-4cad-9b73-6601913bd999" />
+
+<img width="1366" height="768" alt="FOC3" src="https://github.com/user-attachments/assets/67985451-8529-4130-ae1d-5e4a1c5321ff" />
+
+<img width="1366" height="768" alt="FOC4" src="https://github.com/user-attachments/assets/93661dd7-8f11-4fb6-ae59-98633f77ef8f" />
+
+<img width="1366" height="768" alt="FOC5" src="https://github.com/user-attachments/assets/c80a89fa-8077-4ac3-97bd-8fecc6dc1c4a" />
+
+<img width="1366" height="768" alt="FOC6" src="https://github.com/user-attachments/assets/73bca5da-74e5-4073-914e-46f216d3b086" />
+
+<img width="1366" height="768" alt="FOC7" src="https://github.com/user-attachments/assets/bef536a7-55ef-4992-a836-07891e184483" />
+
+<img width="1366" height="768" alt="FOC8" src="https://github.com/user-attachments/assets/e092a42b-82dc-458c-97ec-ac8d44888bc4" />
+
+
+
+---
+
+## 🛠 Tech Stack
+
+- **JavaScript (ES6+)**
+- **HTML5**
+- **CSS3**
+- **Chrome Extension API (Manifest V3)**
+- **Chrome Storage, Alarms & Notifications APIs**
+
+---
 
 ## Prerequisites / Requirements
 
-- Google Chrome (or any Chromium‑based browser supporting Manifest V3)  
-- Basic knowledge of Chrome extensions (optional for developers)  
-- Node.js (optional, only if you plan to run the development build scripts)  
+- Google Chrome (or any Chromium‑based browser) version 88 or later  
+- Basic knowledge of Chrome extensions for optional development  
 
 ## Installation
 
-1. Clone the repository  
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/vinothkumar2/Focus-Tab.git
-   cd Focus-Tab
    ```
 
 2. Open Chrome and navigate to `chrome://extensions/`.
 
 3. Enable **Developer mode** (toggle in the top‑right corner).
 
-4. Click **Load unpacked** and select the repository’s root folder.
+4. Click **Load unpacked** and select the `Focus-Tab` folder you just cloned.
 
-The extension should now appear in your toolbar.
-
-## Configuration
-
-- Open the extension popup by clicking the icon.  
-- Use the **Add to Blacklist** input to enter domains (e.g., `youtube.com`).  
-- Press **Add to Blacklist**; the site appears in the list with a remove button.  
-- The blacklist is stored locally via `chrome.storage.local`.
-
-## Usage
-
-- Click **Start Focus Session** to hide all tabs whose URLs match any entry in the blacklist.  
-- While the session is active, attempts to navigate to a blocked site are redirected to `warning.html`, which shows a motivational message.  
-- Click **End Focus Session** to restore the hidden tabs.
-
-## Screenshot
-![Focus Mode Screenshot]
-
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/4b4dd3ea-629d-4b66-ac3d-e0d379c6f530" />
-
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/cea5d2b6-7492-400a-adc4-17ec633da8c8" />
-
-
+The extension will appear in the toolbar and is ready to use.
 
 ## Project Structure
 
 ```
 Focus-Tab/
-├─ background.js          # Core logic for hiding/restoring tabs
-├─ manifest.json          # Extension manifest (V3)
+├─ background.js          # Service worker handling tab monitoring and timer
+├─ manifest.json          # Extension manifest (MV3)
+├─ warning.js             # Generates motivational warning page
 ├─ icons/
-│  └─ icon48.png          # Toolbar icon
+│   └─ icon48.png         # Toolbar icon
 ├─ popup/
-│  ├─ popup.html          # Popup UI markup
-│  ├─ popup.css           # Popup styling
-│  └─ popup.js            # Popup interaction script
-├─ warning.html           # Motivational warning page
-└─ README.md              # This file
+│   ├─ popup.html         # Popup UI markup
+│   ├─ popup.css          # Popup styling
+│   └─ popup.js           # Popup interaction logic
+└─ README.md              # This document
 ```
 
-## Features
+## 🎯 Use Cases
 
-- **Blacklist management** – add or remove sites directly from the popup.  
-- **One‑click focus mode** – hide all matching tabs instantly.  
-- **Automatic restoration** – restore hidden tabs when the session ends.  
-- **Motivational warning page** – friendly reminder when a blocked site is accessed.  
+- 🧠 **Deep Work Sessions**  
+  Block distractions and maintain complete focus during important tasks.
+
+- 📚 **Exam Preparation**  
+  Stay disciplined by blocking social media and entertainment sites while studying.
+
+- 💻 **Coding & Development**  
+  Avoid context switching and maintain flow during long programming sessions.
+
+- 🏢 **Office & Banking Work**  
+  Improve productivity during work hours by limiting non-work-related websites.
+
+- 📵 **Social Media Detox**  
+  Reduce unnecessary scrolling by restricting access to distracting platforms.
+
+- ⏱️ **Pomodoro Productivity Workflow**  
+  Follow structured work–break cycles for sustainable productivity.
+
 
 ## Development
 
 If you wish to modify or extend the extension:
 
-1. Install dependencies (if any)  
+1. Make your changes in the source files (`background.js`, `popup/*`, `warning.js`).  
+2. In `chrome://extensions/`, click the **Reload** button on the Focus‑Tab entry to apply changes.  
+3. Use Chrome’s **Developer Tools** (Console, Sources) to debug background scripts and popup UI.  
 
-   ```bash
-   npm install
-   ```
+No additional build step is required; the extension runs directly from the source files.
 
-2. Run a watch script to automatically reload the extension during development (example script):
+## ⚠️ Disclaimer
 
-   ```bash
-   npm run watch
-   ```
+This extension is currently **under active development**.  
+While the core features are stable, you may encounter minor bugs or unexpected behavior.
 
-   *(Add a `watch` script to `package.json` that copies files to a temporary directory and reloads the extension via Chrome’s `chrome.runtime.reload()`.)*
+The issues will be **identified and fixed in upcoming updates**.  
+Your feedback and bug reports are highly appreciated and will help improve the extension.
 
-3. After making changes, reload the extension on `chrome://extensions/` by clicking the **Reload** button.
+If you face any problems, please consider opening an issue in the GitHub repository.
 
 ## Contributing
 
@@ -145,21 +225,6 @@ Contributions are welcome! Please follow these steps:
 
 1. Fork the repository.  
 2. Create a new branch for your feature or bug fix.  
-3. Ensure code follows the existing style and passes any linting checks.  
-4. Open a pull request with a clear description of your changes.
-
-## License
-
-The project is currently **unlicensed**.
-
-## FAQ
-
-**Q: Can I use Focus-Tab on browsers other than Chrome?**  
-A: The extension is built for Manifest V3, which is supported by Chromium‑based browsers (e.g., Edge, Brave). Adjust the `manifest.json` if needed for other browsers.
-
-**Q: Where is the blacklist stored?**  
-A: The blacklist is saved in `chrome.storage.local`, persisting across browser restarts.
-
-**Q: How does the warning page work?**  
-A: When a blocked URL is detected, the background script redirects the tab to `warning.html`, which displays a static motivational message. You can customize this page by editing `warning.html` and its inline CSS.
-
+3. Ensure your changes adhere to the existing code style.  
+4. Test the extension by reloading it in Chrome.  
+5. Open a pull request with a clear description of the changes.
