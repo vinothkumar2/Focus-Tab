@@ -22,7 +22,8 @@ A powerful Chrome extension that helps you stay productive by **blocking distrac
   <img src="https://img.shields.io/badge/Chrome%20API-Extensions-red?style=for-the-badge&logo=google-chrome&logoColor=white" />
 
   <!-- AI Assistance -->
-  <img src="https://img.shields.io/badge/Built%20with-DeepSeek%20AI-purple?style=for-the-badge" />
+<img src="https://img.shields.io/badge/AI%20Assisted-DeepSeek-purple?style=for-the-badge" />
+
 
   <!-- Repo Stats -->
   <a href="https://github.com/vinothkumar2/Focus-Tab/stargazers">
