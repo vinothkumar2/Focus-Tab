@@ -11,65 +11,93 @@ let timerState = {
   duration: 0,
   endTime: null,
   startTime: null,
-  autoContinue: false // Auto switch to next mode
+  autoContinue: false
 };
 
 // Initialize
 chrome.runtime.onInstalled.addListener(() => {
-  loadState();
+  console.log('Extension installed');
+  loadStateFromStorage();
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  loadState();
+  console.log('Extension starting up');
+  loadStateFromStorage();
 });
 
 // Load state from storage
-async function loadState() {
+async function loadStateFromStorage() {
   try {
     const data = await chrome.storage.local.get([
-      'focusState', 'timerState', 'blacklistSites'
+      'focusState', 'timerState', 'blacklist'
     ]);
+    
+    console.log('Loading state from storage:', data);
     
     if (data.focusState) {
       focusState = data.focusState;
+      console.log('Loaded focusState:', focusState);
       if (focusState.active) {
+        console.log('Focus mode was active, starting navigation monitoring');
         startNavigationMonitoring();
         updateIcon();
+      }
+    } else {
+      // Try loading legacy blacklist
+      const legacyData = await chrome.storage.local.get(['blacklistSites']);
+      if (legacyData.blacklistSites) {
+        focusState.blacklist = legacyData.blacklistSites;
+        console.log('Loaded legacy blacklist:', focusState.blacklist);
+        await saveState();
       }
     }
     
     if (data.timerState) {
       timerState = data.timerState;
+      console.log('Loaded timerState:', timerState);
+      
       if (timerState.active && timerState.endTime) {
         const now = Date.now();
         if (now < timerState.endTime) {
           // Resume timer
           const remainingMs = timerState.endTime - now;
           const remainingMinutes = Math.ceil(remainingMs / 60000);
+          console.log(`Resuming timer with ${remainingMinutes} minutes remaining`);
           scheduleAlarm(remainingMinutes);
           updateIcon();
+          
+          // If it's a work timer, start navigation monitoring
+          if (timerState.mode === 'work' && !focusState.active) {
+            await startFocusMode();
+          }
         } else {
           // Timer expired
+          console.log('Timer expired, handling...');
           await handleTimerEnd();
         }
       }
     }
     
-    if (data.blacklistSites) {
-      focusState.blacklist = data.blacklistSites;
+    if (data.blacklist) {
+      focusState.blacklist = data.blacklist;
+      console.log('Loaded blacklist directly:', focusState.blacklist);
     }
+    
   } catch (error) {
     console.error('Error loading state:', error);
   }
 }
 
-// Save state
+// Save state to storage
 async function saveState() {
   try {
+    // Save both focusState and blacklist separately for redundancy
     await chrome.storage.local.set({
       focusState: focusState,
-      timerState: timerState
+      timerState: timerState,
+      blacklist: focusState.blacklist
     });
+    console.log('State saved to storage');
   } catch (error) {
     console.error('Error saving state:', error);
   }
@@ -77,7 +105,7 @@ async function saveState() {
 
 // Message handler
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('Background received:', request.action);
+  console.log('Background received message:', request.action);
   
   const handleRequest = async () => {
     switch (request.action) {
@@ -105,17 +133,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const site = request.site.toLowerCase().trim();
         if (site && !focusState.blacklist.includes(site)) {
           focusState.blacklist.push(site);
-          await chrome.storage.local.set({ blacklistSites: focusState.blacklist });
+          await saveState();
+          console.log('Added to blacklist:', site);
           sendResponse({ success: true });
         } else {
-          sendResponse({ success: false });
+          sendResponse({ success: false, message: 'Site already in blacklist or invalid' });
         }
         break;
         
       case 'remove_from_blacklist':
+        const originalLength = focusState.blacklist.length;
         focusState.blacklist = focusState.blacklist.filter(s => s !== request.site);
-        await chrome.storage.local.set({ blacklistSites: focusState.blacklist });
-        sendResponse({ success: true });
+        if (focusState.blacklist.length < originalLength) {
+          await saveState();
+          console.log('Removed from blacklist:', request.site);
+          sendResponse({ success: true });
+        } else {
+          sendResponse({ success: false, message: 'Site not found in blacklist' });
+        }
         break;
         
       case 'get_blacklist':
@@ -138,7 +173,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ hostname: '', url: '' });
           }
         });
-        return true;
+        return true; // Keep message channel open
         
       case 'start_work_timer':
         await startWorkTimer(request.minutes, request.autoContinue);
@@ -160,6 +195,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         await saveState();
         sendResponse({ success: true });
         break;
+        
+      default:
+        sendResponse({ success: false, message: 'Unknown action' });
     }
   };
   
@@ -169,9 +207,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Focus mode functions
 async function startFocusMode() {
-  if (focusState.active) return;
+  if (focusState.active) {
+    console.log('Focus mode already active');
+    return;
+  }
   
-  console.log('Starting focus mode...');
+  console.log('Starting focus mode with blacklist:', focusState.blacklist);
   
   try {
     const tabs = await chrome.tabs.query({});
@@ -182,7 +223,9 @@ async function startFocusMode() {
       
       // Skip internal URLs
       if (tab.url.startsWith('chrome://') || 
-          tab.url.startsWith('chrome-extension://')) {
+          tab.url.startsWith('chrome-extension://') ||
+          tab.url === '' || 
+          tab.url === 'about:blank') {
         continue;
       }
       
@@ -195,14 +238,15 @@ async function startFocusMode() {
           const cleanSite = site.toLowerCase()
             .replace('www.', '')
             .replace('https://', '')
-            .replace('http://', '');
+            .replace('http://', '')
+            .replace('/', '');
           
-          if (hostname.includes(cleanSite)) {
+          if (hostname.includes(cleanSite) || cleanSite.includes(hostname)) {
             shouldBlock = true;
             break;
           }
         } catch (e) {
-          // Invalid URL, skip
+          console.log('Error parsing URL:', tab.url, e);
         }
       }
       
@@ -210,6 +254,8 @@ async function startFocusMode() {
         tabsToHide.push(tab);
       }
     }
+    
+    console.log(`Found ${tabsToHide.length} tabs to hide`);
     
     // Save tabs before removing
     focusState.hiddenTabs = tabsToHide.map(tab => ({
@@ -220,7 +266,12 @@ async function startFocusMode() {
     
     // Remove tabs
     for (const tab of tabsToHide) {
-      await chrome.tabs.remove(tab.id);
+      try {
+        await chrome.tabs.remove(tab.id);
+        console.log('Removed tab:', tab.url);
+      } catch (error) {
+        console.error('Error removing tab:', error);
+      }
     }
     
     focusState.active = true;
@@ -236,20 +287,30 @@ async function startFocusMode() {
       message: `Blocked ${tabsToHide.length} distracting tabs`
     });
     
+    console.log('Focus mode started successfully');
+    
   } catch (error) {
     console.error('Error starting focus mode:', error);
   }
 }
 
 async function stopFocusMode() {
-  if (!focusState.active) return;
+  if (!focusState.active) {
+    console.log('Focus mode not active');
+    return;
+  }
   
-  console.log('Stopping focus mode...');
+  console.log('Stopping focus mode, restoring', focusState.hiddenTabs.length, 'tabs');
   
   try {
     // Restore hidden tabs
     for (const tab of focusState.hiddenTabs) {
-      await chrome.tabs.create({ url: tab.url });
+      try {
+        await chrome.tabs.create({ url: tab.url });
+        console.log('Restored tab:', tab.url);
+      } catch (error) {
+        console.error('Error restoring tab:', error);
+      }
     }
     
     focusState.active = false;
@@ -265,6 +326,8 @@ async function stopFocusMode() {
       title: 'Focus Mode Ended',
       message: 'All tabs have been restored'
     });
+    
+    console.log('Focus mode stopped successfully');
     
   } catch (error) {
     console.error('Error stopping focus mode:', error);
@@ -305,6 +368,8 @@ async function startWorkTimer(minutes, autoContinue = false) {
     title: 'Work Session Started',
     message: `${minutes}-minute work session started`
   });
+  
+  console.log('Work timer started');
 }
 
 async function startBreakTimer(minutes, autoContinue = false) {
@@ -342,6 +407,8 @@ async function startBreakTimer(minutes, autoContinue = false) {
     title: 'Break Started',
     message: `${minutes}-minute break started`
   });
+  
+  console.log('Break timer started');
 }
 
 async function stopTimer() {
@@ -377,6 +444,8 @@ async function handleTimerEnd() {
   const wasWorkMode = timerState.mode === 'work';
   const autoContinue = timerState.autoContinue;
   
+  console.log(`Timer ended: ${wasWorkMode ? 'Work' : 'Break'} mode, autoContinue: ${autoContinue}`);
+  
   // Stop current timer
   timerState.active = false;
   timerState.mode = null;
@@ -397,10 +466,11 @@ async function handleTimerEnd() {
     
     // Auto start break timer if enabled
     if (autoContinue) {
-      // Default break time is 5 minutes
+      console.log('Auto-continue enabled, starting break timer');
+      // Wait 2 seconds then start 5-minute break
       setTimeout(() => {
         startBreakTimer(5, true);
-      }, 2000); // 2 second delay
+      }, 2000);
     }
     
   } else {
@@ -414,17 +484,26 @@ async function handleTimerEnd() {
     
     // Auto start work timer if enabled
     if (autoContinue) {
-      // Default work time is 25 minutes
+      console.log('Auto-continue enabled, starting work timer');
+      // Wait 2 seconds then start 25-minute work session
       setTimeout(() => {
         startWorkTimer(25, true);
-      }, 2000); // 2 second delay
+      }, 2000);
     }
   }
 }
 
 // Update extension icon
 function updateIcon() {
+  const iconPaths = {
+    16: 'icons/icon16.png',
+    48: 'icons/icon48.png',
+    128: 'icons/icon128.png'
+  };
+  
+  // Set badge based on state
   if (timerState.active) {
+    // Show countdown on badge
     if (timerState.endTime) {
       const remainingMs = timerState.endTime - Date.now();
       const remainingMinutes = Math.max(0, Math.ceil(remainingMs / 60000));
@@ -433,43 +512,15 @@ function updateIcon() {
       
       if (timerState.mode === 'work') {
         chrome.action.setBadgeBackgroundColor({ color: '#4CAF50' }); // Green
-        chrome.action.setIcon({
-          path: {
-            16: 'icons/icon16-work.png',
-            48: 'icons/icon48-work.png',
-            128: 'icons/icon128-work.png'
-          }
-        });
       } else {
         chrome.action.setBadgeBackgroundColor({ color: '#2196F3' }); // Blue
-        chrome.action.setIcon({
-          path: {
-            16: 'icons/icon16-break.png',
-            48: 'icons/icon48-break.png',
-            128: 'icons/icon128-break.png'
-          }
-        });
       }
     }
   } else if (focusState.active) {
     chrome.action.setBadgeText({ text: 'ON' });
     chrome.action.setBadgeBackgroundColor({ color: '#FF9800' }); // Orange
-    chrome.action.setIcon({
-      path: {
-        16: 'icons/icon16.png',
-        48: 'icons/icon48.png',
-        128: 'icons/icon128.png'
-      }
-    });
   } else {
     chrome.action.setBadgeText({ text: '' });
-    chrome.action.setIcon({
-      path: {
-        16: 'icons/icon16.png',
-        48: 'icons/icon48.png',
-        128: 'icons/icon128.png'
-      }
-    });
   }
 }
 
@@ -487,7 +538,9 @@ function startNavigationMonitoring() {
       const hostname = url.hostname.toLowerCase();
       
       // Skip internal URLs
-      if (url.protocol === 'chrome:' || url.protocol === 'chrome-extension:') {
+      if (url.protocol === 'chrome:' || 
+          url.protocol === 'chrome-extension:' ||
+          url.protocol === 'about:') {
         return;
       }
       
@@ -496,9 +549,11 @@ function startNavigationMonitoring() {
         const cleanSite = site.toLowerCase()
           .replace('www.', '')
           .replace('https://', '')
-          .replace('http://', '');
+          .replace('http://', '')
+          .replace('/', '');
         
-        if (hostname.includes(cleanSite)) {
+        if (hostname.includes(cleanSite) || cleanSite.includes(hostname)) {
+          console.log('Blocking navigation to:', hostname);
           await chrome.tabs.update(details.tabId, {
             url: chrome.runtime.getURL(`warning.html?site=${encodeURIComponent(hostname)}`)
           });
@@ -511,6 +566,7 @@ function startNavigationMonitoring() {
   };
   
   chrome.webNavigation.onBeforeNavigate.addListener(navigationListener);
+  console.log('Navigation monitoring started');
 }
 
 function stopNavigationMonitoring() {
@@ -518,11 +574,19 @@ function stopNavigationMonitoring() {
     chrome.webNavigation.onBeforeNavigate.removeListener(navigationListener);
     navigationListener = null;
   }
+  console.log('Navigation monitoring stopped');
 }
 
-// Update icon regularly for countdown
+// Update icon every minute for timer countdown
 setInterval(() => {
   if (timerState.active) {
     updateIcon();
   }
 }, 30000); // Update every 30 seconds
+
+// Save state periodically to ensure persistence
+setInterval(async () => {
+  if (focusState.active || timerState.active) {
+    await saveState();
+  }
+}, 60000); // Save every minute
