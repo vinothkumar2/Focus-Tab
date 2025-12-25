@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -21,7 +21,7 @@
     <div class="progress-container">
       <div id="progressBar" class="progress-bar"></div>
     </div>
-    <button id="endTimer" class="action-button">
+    <button id="endTimer" class="timer-button">
       <span>⏹️</span> End Session
     </button>
   </div>
@@ -90,69 +90,54 @@
     </div>
   </div>
 
-  <!-- Pomodoro Timer Content -->
-  <div id="pomodoro-timer" class="tab-content">
-    <!-- Timer Controls -->
-    <div class="pomodoro-controls">
-      <div class="work-controls">
-        <h3>🎯 Work Session</h3>
-        <div class="time-options">
-          <div class="time-option selected" data-minutes="25">25 min</div>
-          <div class="time-option" data-minutes="30">30 min</div>
-          <div class="time-option" data-minutes="45">45 min</div>
-          <div class="time-option" data-minutes="20">20 min</div>
-          <div class="time-option" data-minutes="15">15 min</div>
-          <div class="time-option" data-minutes="10">10 min</div>
-        </div>
-        <div class="custom-time">
-          <input type="number" id="workTime" min="1" max="120" value="25" placeholder="Custom" />
-          <button id="startWork" class="action-button">Start Work</button>
-        </div>
-      </div>
+<!-- Pomodoro Timer Content -->
+<div id="pomodoro-timer" class="tab-content">
 
-      <div class="break-controls">
-        <h3>☕ Break</h3>
-        <div class="time-options">
-          <div class="time-option selected" data-minutes="5">5 min</div>
-          <div class="time-option" data-minutes="10">10 min</div>
-          <div class="time-option" data-minutes="15">15 min</div>
-          <div class="time-option" data-minutes="3">3 min</div>
-          <div class="time-option" data-minutes="2">2 min</div>
-          <div class="time-option" data-minutes="1">1 min</div>
-        </div>
-        <div class="custom-time">
-          <input type="number" id="breakTime" min="1" max="60" value="5" placeholder="Custom" />
-          <button id="startBreak" class="action-button">Start Break</button>
-        </div>
-      </div>
-    </div>
+  <!-- Pomodoro Controls -->
+  <div class="pomodoro-controls">
+    <div class="work-controls" style="grid-column: span 2;">
+      <h3>🍅 Pomodoro Session</h3>
 
-    <!-- Auto Continue -->
-    <div class="auto-continue">
-      <input type="checkbox" id="autoContinue" />
-      <label for="autoContinue">Auto-switch between work and break sessions</label>
-    </div>
+      <p style="font-size:13px;color:#bbb;margin-bottom:12px;">
+        Work for <strong>25 minutes</strong>, then take a <strong>5-minute break</strong>.
+      </p>
 
-    <!-- Timer Stats -->
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-value" id="completedWorkSessions">0</div>
-        <div class="stat-label">Work Sessions</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value" id="totalFocusTime">0</div>
-        <div class="stat-label">Focus Minutes</div>
-      </div>
-    </div>
-
-    <!-- Pomodoro Tips -->
-    <div class="pomodoro-tips">
-      <h4>💡 Pomodoro Technique Tips</h4>
-      <p>• Work for 25 minutes, then take a 5-minute break</p>
-      <p>• After 4 work sessions, take a longer 15-30 minute break</p>
-      <p>• During breaks, stand up, stretch, and look away from the screen</p>
+      <button id="startPomodoro" class="timer-button">
+        ▶️ Start Pomodoro
+      </button>
     </div>
   </div>
+
+  <!-- Auto Continue -->
+  <div class="auto-continue">
+    <input type="checkbox" id="autoContinue" checked />
+    <label for="autoContinue">
+      Auto-switch between work and break sessions
+    </label>
+  </div>
+
+  <!-- Timer Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value" id="completedWorkSessions">0</div>
+      <div class="stat-label">Work Sessions</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="totalFocusTime">0</div>
+      <div class="stat-label">Focus Minutes</div>
+    </div>
+  </div>
+
+  <!-- Pomodoro Tips -->
+  <div class="pomodoro-tips">
+    <h4>💡 Pomodoro Technique</h4>
+    <p>• 25 minutes focused work</p>
+    <p>• 5 minutes break</p>
+    <p>• Repeat automatically</p>
+  </div>
+
+</div>
+
 
   <script src="popup.js"></script>
 </body>
