@@ -7,7 +7,7 @@ let focusState = {
 
 let timerState = {
   active: false,
-  mode: null, // 'work' or 'break'
+  mode: null,
   duration: 0,
   endTime: null,
   startTime: null,
@@ -15,100 +15,104 @@ let timerState = {
 };
 
 // Initialize
-chrome.runtime.onInstalled.addListener(() => {
-  console.log('Extension installed');
-  loadStateFromStorage();
-});
+chrome.runtime.onInstalled.addListener(loadStateFromStorage);
+chrome.runtime.onStartup.addListener(loadStateFromStorage);
 
-chrome.runtime.onStartup.addListener(() => {
-  console.log('Extension starting up');
-  loadStateFromStorage();
-});
-
-// Load state from storage
+// =========================
+// SAFE STATE LOADING (FIX)
+// =========================
 async function loadStateFromStorage() {
   try {
     const data = await chrome.storage.local.get([
-      'focusState', 'timerState', 'blacklist'
+      'focusState',
+      'timerState',
+      'blacklist',
+      'blacklistSites' // legacy
     ]);
-    
-    console.log('Loading state from storage:', data);
-    
-    if (data.focusState) {
-      focusState = data.focusState;
-      console.log('Loaded focusState:', focusState);
-      if (focusState.active) {
-        console.log('Focus mode was active, starting navigation monitoring');
-        startNavigationMonitoring();
-        updateIcon();
-      }
-    } else {
-      // Try loading legacy blacklist
-      const legacyData = await chrome.storage.local.get(['blacklistSites']);
-      if (legacyData.blacklistSites) {
-        focusState.blacklist = legacyData.blacklistSites;
-        console.log('Loaded legacy blacklist:', focusState.blacklist);
-        await saveState();
-      }
+
+    /* ---- BLACKLIST: SOURCE OF TRUTH ---- */
+    let storedBlacklist = [];
+
+    if (Array.isArray(data.blacklist) && data.blacklist.length > 0) {
+      storedBlacklist = data.blacklist;
+    } else if (Array.isArray(data.blacklistSites) && data.blacklistSites.length > 0) {
+      storedBlacklist = data.blacklistSites;
     }
-    
+
+    /* ---- FOCUS STATE (SAFE MERGE) ---- */
+    if (data.focusState) {
+      focusState.active = data.focusState.active || false;
+      focusState.hiddenTabs = data.focusState.hiddenTabs || [];
+    }
+
+    // 🔒 PROTECT BLACKLIST
+    if (storedBlacklist.length > 0) {
+      focusState.blacklist = storedBlacklist;
+    } else if (!Array.isArray(focusState.blacklist)) {
+      focusState.blacklist = [];
+    }
+
+    /* ---- TIMER STATE ---- */
     if (data.timerState) {
       timerState = data.timerState;
-      console.log('Loaded timerState:', timerState);
-      
-      if (timerState.active && timerState.endTime) {
-        const now = Date.now();
-        if (now < timerState.endTime) {
-          // Resume timer
-          const remainingMs = timerState.endTime - now;
-          const remainingMinutes = Math.ceil(remainingMs / 60000);
-          console.log(`Resuming timer with ${remainingMinutes} minutes remaining`);
-          scheduleAlarm(remainingMinutes);
-          updateIcon();
-          
-          // If it's a work timer, start navigation monitoring
-          if (timerState.mode === 'work' && !focusState.active) {
-            await startFocusMode();
-          }
-        } else {
-          // Timer expired
-          console.log('Timer expired, handling...');
-          await handleTimerEnd();
+    }
+
+    // Resume focus mode
+    if (focusState.active) {
+      startNavigationMonitoring();
+      updateIcon();
+    }
+
+    // Resume timer
+    if (timerState.active && timerState.endTime) {
+      const remaining = timerState.endTime - Date.now();
+      if (remaining > 0) {
+        scheduleAlarm(Math.ceil(remaining / 60000));
+        if (timerState.mode === 'work' && !focusState.active) {
+          await startFocusMode();
         }
+      } else {
+        await handleTimerEnd();
       }
     }
-    
-    if (data.blacklist) {
-      focusState.blacklist = data.blacklist;
-      console.log('Loaded blacklist directly:', focusState.blacklist);
-    }
-    
+
+    // Persist clean state
+    await saveState();
+
   } catch (error) {
     console.error('Error loading state:', error);
   }
 }
 
-// Save state to storage
+// =========================
+// SAFE SAVE (FIX)
+// =========================
 async function saveState() {
   try {
-    // Save both focusState and blacklist separately for redundancy
     await chrome.storage.local.set({
-      focusState: focusState,
+      focusState: {
+        active: focusState.active,
+        hiddenTabs: focusState.hiddenTabs
+      },
       timerState: timerState,
-      blacklist: focusState.blacklist
+      blacklist: Array.isArray(focusState.blacklist)
+        ? focusState.blacklist
+        : []
     });
-    console.log('State saved to storage');
   } catch (error) {
     console.error('Error saving state:', error);
   }
 }
 
-// Message handler
+// =========================
+// MESSAGE HANDLER (UNCHANGED)
+// =========================
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('Background received message:', request.action);
-  
-  const handleRequest = async () => {
+
+  (async () => {
     switch (request.action) {
+
       case 'get_session_status':
         sendResponse({
           focusActive: focusState.active,
@@ -118,92 +122,81 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           timerDuration: timerState.duration
         });
         break;
-        
+
       case 'start_focus':
         await startFocusMode();
         sendResponse({ success: true });
         break;
-        
+
       case 'stop_focus':
         await stopFocusMode();
         sendResponse({ success: true });
         break;
-        
-      case 'add_to_blacklist':
+
+      case 'add_to_blacklist': {
         const site = request.site.toLowerCase().trim();
         if (site && !focusState.blacklist.includes(site)) {
           focusState.blacklist.push(site);
           await saveState();
-          console.log('Added to blacklist:', site);
-          sendResponse({ success: true });
-        } else {
-          sendResponse({ success: false, message: 'Site already in blacklist or invalid' });
         }
+        sendResponse({ success: true });
         break;
-        
+      }
+
       case 'remove_from_blacklist':
-        const originalLength = focusState.blacklist.length;
         focusState.blacklist = focusState.blacklist.filter(s => s !== request.site);
-        if (focusState.blacklist.length < originalLength) {
-          await saveState();
-          console.log('Removed from blacklist:', request.site);
-          sendResponse({ success: true });
-        } else {
-          sendResponse({ success: false, message: 'Site not found in blacklist' });
-        }
+        await saveState();
+        sendResponse({ success: true });
         break;
-        
+
       case 'get_blacklist':
         sendResponse({ blacklist: focusState.blacklist });
         break;
-        
+
       case 'get_current_tab':
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (tabs[0] && tabs[0].url) {
+          if (tabs[0]?.url) {
             try {
               const url = new URL(tabs[0].url);
-              sendResponse({ 
-                hostname: url.hostname,
-                url: tabs[0].url
-              });
-            } catch (e) {
+              sendResponse({ hostname: url.hostname, url: tabs[0].url });
+            } catch {
               sendResponse({ hostname: '', url: tabs[0].url });
             }
           } else {
             sendResponse({ hostname: '', url: '' });
           }
         });
-        return true; // Keep message channel open
-        
+        return;
+
       case 'start_work_timer':
         await startWorkTimer(request.minutes, request.autoContinue);
         sendResponse({ success: true });
         break;
-        
+
       case 'start_break_timer':
         await startBreakTimer(request.minutes, request.autoContinue);
         sendResponse({ success: true });
         break;
-        
+
       case 'stop_timer':
         await stopTimer();
         sendResponse({ success: true });
         break;
-        
+
       case 'set_auto_continue':
         timerState.autoContinue = request.enabled;
         await saveState();
         sendResponse({ success: true });
         break;
-        
+
       default:
         sendResponse({ success: false, message: 'Unknown action' });
     }
-  };
-  
-  handleRequest();
-  return true;
+  })();
+
+  return true; // ✅ keep service worker alive
 });
+
 
 // Focus mode functions
 async function startFocusMode() {
