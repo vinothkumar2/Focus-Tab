@@ -135,11 +135,12 @@ Focus Tab follows a **classic, non‑editable Pomodoro cycle**:
 
 > *(Real usage screenshots)*
 
-<img width="1366" height="768" alt="FC3" src="https://github.com/user-attachments/assets/f666ad4e-45d6-4428-82c4-48dcec860544" />
+<img width="1366" height="768" alt="FC6" src="https://github.com/user-attachments/assets/d29e482d-12d4-4eef-ac66-e84db89fbe34" />
 
-<img width="1366" height="768" alt="FC4" src="https://github.com/user-attachments/assets/e4e2e980-c7ff-4a69-a8ba-829634935994" />
+<img width="1366" height="768" alt="FC7" src="https://github.com/user-attachments/assets/e3298920-05cb-4a06-82cc-de7a8432339b" />
 
-<img width="1366" height="768" alt="FC5" src="https://github.com/user-attachments/assets/9208b8ea-1555-46f1-bbab-7cb11c0eb813" />
+<img width="1366" height="768" alt="FC8" src="https://github.com/user-attachments/assets/23989bf0-9828-4a88-ab72-72f79fe2ff4b" />
+
 
 
 ---
