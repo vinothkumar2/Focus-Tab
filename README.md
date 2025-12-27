@@ -48,63 +48,86 @@ A powerful Chrome extension that helps you stay productive by **blocking distrac
 **Focus Tab** helps you eliminate distractions by blocking selected websites **only during focus sessions**.  
 It combines **website blocking**, a **Pomodoro timer**, motivational quotes, visual feedback, notifications, and productivity statistics.
 
-Designed for students, developers, professionals, and anyone who wants to practice deep work.
+Designed for **students, developers, professionals, and banking/office work** where deep focus matters.
 
 ---
 
 ## ✨ Features
 
-### 🔒 Focus Tab (Website Blocking)
-- Add or remove websites from a blacklist
-- Block sites **only when focus mode is active**
-- One-click **Start / End Focus Mode**
-- Custom warning messages
-- Motivational quote-based blocking page
-- Clean and distraction-free UI
+### 🔒 Website Blocking (Focus Mode)
+- Add / remove websites to a **persistent blacklist**
+- Blacklist is stored safely using `chrome.storage.local`
+- Websites are blocked **only when Focus Mode is active**
+- One‑click **Start / Stop Focus Mode**
+- Blocks:
+  - Existing open tabs
+  - New navigations in real time
+- Clean motivational **warning page** for blocked sites
+- Custom warning message support
 
 ---
 
-### ⏱️ Pomodoro Timer
-- **Work Mode**
-  - Automatically enables focus mode
-  - Blocks all blacklisted sites
-- **Break Mode**
-  - Automatically disables focus mode
-  - Allows all websites
-- Preset durations:
-  - Work: 15, 20, 25, 30, 45 minutes
-  - Break: 1, 2, 3, 5, 10, 15 minutes
-- **Auto-Continue**
-  - Automatically switches between work & break sessions
+### ⏱️ Pomodoro Timer 
+
+Focus Tab follows a **classic, non‑editable Pomodoro cycle**:
+
+- 🧠 **Work Session**: 25 minutes
+  - Focus Mode automatically enabled
+  - All blacklisted websites blocked
+
+- ☕ **Break Session**: 5 minutes
+  - Focus Mode automatically disabled
+  - All websites allowed
+
+- 🔁 **Auto‑Continue**
+  - Automatically switches between Work ↔ Break
+  - Runs continuously until stopped
+
+- Single **Start Pomodoro** button
+- Stop timer at any time
 
 ---
 
 ### 🎨 Visual Feedback
-- Color-coded UI for work & break
-- Live countdown timer
+- Live countdown timer (MM:SS)
+- Color‑coded UI:
+  - Green → Work session
+  - Blue → Break session
 - Progress bar animation
-- Dark-mode friendly design
+- Minimal, distraction‑free popup UI
 
 ---
 
 ### 🔔 Notifications
-- Alerts when:
-  - Work session starts
-  - Break session starts
-  - Session ends
+- Desktop notifications for:
+  - Work session started
+  - Break session started
+  - Session completed
+- Helps you stay aware without checking the popup
 
 ---
 
 ### 🏷️ Extension Badge
-- Shows **remaining minutes** on the toolbar icon
-- Updates in real time during sessions
+- Toolbar badge shows **remaining minutes**
+- Updates automatically every 30 seconds
+- Different badge colors for Work / Break
 
 ---
 
-### 📊 Productivity Statistics
+### 📊 Productivity Stats
 - Tracks:
-  - Total work sessions
+  - Total completed work sessions
   - Total focus time (minutes)
+- Stats persist across browser restarts
+
+---
+
+### ⚙️ Performance & Stability Improvements
+- MV3‑safe **service worker architecture**
+- In‑memory blacklist caching for fast navigation blocking
+- Debounced state saving (prevents race conditions)
+- Alarm‑based timer (survives background suspension)
+- Tested against Chrome service‑worker restarts
 
 ---
 
