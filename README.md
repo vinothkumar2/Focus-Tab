@@ -135,22 +135,11 @@ Focus Tab follows a **classic, non‑editable Pomodoro cycle**:
 
 > *(Real usage screenshots)*
 
-<img width="1366" height="768" alt="FOC1" src="https://github.com/user-attachments/assets/96002e28-8798-423b-ba0d-8b0c5c37f4eb" />
+<img width="1366" height="768" alt="FC3" src="https://github.com/user-attachments/assets/f666ad4e-45d6-4428-82c4-48dcec860544" />
 
-<img width="1366" height="768" alt="FOC2" src="https://github.com/user-attachments/assets/2659679d-ce1f-4cad-9b73-6601913bd999" />
+<img width="1366" height="768" alt="FC4" src="https://github.com/user-attachments/assets/e4e2e980-c7ff-4a69-a8ba-829634935994" />
 
-<img width="1366" height="768" alt="FOC3" src="https://github.com/user-attachments/assets/67985451-8529-4130-ae1d-5e4a1c5321ff" />
-
-<img width="1366" height="768" alt="FOC4" src="https://github.com/user-attachments/assets/93661dd7-8f11-4fb6-ae59-98633f77ef8f" />
-
-<img width="1366" height="768" alt="FOC5" src="https://github.com/user-attachments/assets/c80a89fa-8077-4ac3-97bd-8fecc6dc1c4a" />
-
-<img width="1366" height="768" alt="FOC6" src="https://github.com/user-attachments/assets/73bca5da-74e5-4073-914e-46f216d3b086" />
-
-<img width="1366" height="768" alt="FOC7" src="https://github.com/user-attachments/assets/bef536a7-55ef-4992-a836-07891e184483" />
-
-<img width="1366" height="768" alt="FOC8" src="https://github.com/user-attachments/assets/e092a42b-82dc-458c-97ec-ac8d44888bc4" />
-
+<img width="1366" height="768" alt="FC5" src="https://github.com/user-attachments/assets/9208b8ea-1555-46f1-bbab-7cb11c0eb813" />
 
 
 ---
@@ -223,25 +212,37 @@ Focus-Tab/
   Follow structured work–break cycles for sustainable productivity.
 
 
-## Development
+## ✅ Requirements
 
-If you wish to modify or extend the extension:
+- Google Chrome / Chromium‑based browser (v88+)
+- Developer mode enabled (for local installation)
 
-1. Make your changes in the source files (`background.js`, `popup/*`, `warning.js`).  
-2. In `chrome://extensions/`, click the **Reload** button on the Focus‑Tab entry to apply changes.  
-3. Use Chrome’s **Developer Tools** (Console, Sources) to debug background scripts and popup UI.  
+---
 
-No additional build step is required; the extension runs directly from the source files.
+## 🚀 Installation
 
+1. Clone the repository:
+
+```bash
+git clone https://github.com/vinothkumar2/Focus-Tab.git
+```
+
+2. Open Chrome → `chrome://extensions/`
+3. Enable **Developer mode** (top‑right)
+4. Click **Load unpacked** and select the `Focus-Tab` folder
+
+The extension will appear in the toolbar and is ready to use.
+
+---
 ## ⚠️ Disclaimer
 
-This extension is currently **under active development**.  
-While the core features are stable, you may encounter minor bugs or unexpected behavior.
+This extension is **actively maintained and continuously improved**.
 
-The issues will be **identified and fixed in upcoming updates**.  
-Your feedback and bug reports are highly appreciated and will help improve the extension.
+The core functionality — website blocking, Focus Mode, and the Pomodoro workflow — is **stable and reliable**. However, as the project evolves, you may notice occasional minor bugs, performance tweaks, or user‑experience refinements.
 
-If you face any problems, please consider opening an issue in the GitHub repository.
+Your feedback plays an important role in shaping future updates. Bug reports, feature requests, and suggestions are always welcome via **GitHub Issues**.
+
+---
 
 ## Contributing
 
