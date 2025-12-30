@@ -41,6 +41,13 @@ A powerful Chrome extension that helps you stay productive by **blocking distrac
 
 </p>
 
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/indebibipnljaahkjmaagonpcmhedemp">
+    <img src="https://img.shields.io/badge/Available%20on-Chrome%20Web%20Store-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" />
+  </a>
+</p>
+
+
 ---
 
 ## 🔍 Introduction
@@ -154,27 +161,6 @@ Focus Tab follows a **classic, non‑editable Pomodoro cycle**:
 - **Chrome Storage, Alarms & Notifications APIs**
 
 ---
-
-## Prerequisites / Requirements
-
-- Google Chrome (or any Chromium‑based browser) version 88 or later  
-- Basic knowledge of Chrome extensions for optional development  
-
-## Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/vinothkumar2/Focus-Tab.git
-   ```
-
-2. Open Chrome and navigate to `chrome://extensions/`.
-
-3. Enable **Developer mode** (toggle in the top‑right corner).
-
-4. Click **Load unpacked** and select the `Focus-Tab` folder you just cloned.
-
-The extension will appear in the toolbar and is ready to use.
 
 ## Project Structure
 
